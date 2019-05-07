@@ -2,8 +2,7 @@
 
 This repository contains the source code for the experiments of the article
 
-    "Overcoming the Disentanglement vs Reconstruction Trade-off via
-Jacobian Supervision"
+    "Overcoming the Disentanglement vs Reconstruction Trade-off via Jacobian Supervision"
     José Lezama, ICLR 2019
 
 [https://openreview.net/pdf?id=Hkg4W2AcFm](https://openreview.net/pdf?id=Hkg4W2AcFm)
