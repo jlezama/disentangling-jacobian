@@ -1,4 +1,3 @@
-
 # "Overcoming the Disentanglement vs Reconstruction Trade-off via
 Jacobian Supervision"
 
