@@ -1,5 +1,4 @@
-# "Overcoming the Disentanglement vs Reconstruction Trade-off via
-Jacobian Supervision"
+# "Overcoming the Disentanglement vs Reconstruction Trade-off via Jacobian Supervision"
 
 This repository contains the source code for the experiments of the article
 
