@@ -1,0 +1,1 @@
+QUANTITATIVE RESULTS >> results_progressive/z_2.5e-01_jac_1.0e-01_xcov_1.0e-03_bn_0/h_dim_4 latent code dimension: 4 reconstruction:  0.027703 swaps ok: 0.816461

@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 python train.py  --debug False --n_layers 7 --attr '*'  --lambda_ae 500 --n_epochs 500 --lambda_ttributes 0 --batch_size 64 --lambda_xcov 0.01 --lambda_flipped 0 --lambda_latent_match 0 --outdir training_test --freeze_encoder 0 --freeze_encoder_step2 1 --clip_grad_norm 10 --max_fm 2048 --lambda_jacobian 100  --lambda_y 0 
