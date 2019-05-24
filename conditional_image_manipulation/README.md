@@ -31,7 +31,7 @@ python train.py  --debug False --n_layers 7 --attr '*'  --lambda_ae 500 --n_epoc
 ```
 * Use `--debug True` to train and test on a small subset of the training set.
 * The file `train_examples.sh` includes training examples.
-* A pre-trained model can be found [here] (https://www.dropbox.com/s/gj5rt0cx0ld6qdq/student_with_jacobian.pth?dl=0)
+* A pre-trained model can be found [here](https://www.dropbox.com/s/gj5rt0cx0ld6qdq/student_with_jacobian.pth?dl=0)
 
 ## Web Interface
 The source code for creating an interactive manipulation interface is found in [web_demo](web_demo)
