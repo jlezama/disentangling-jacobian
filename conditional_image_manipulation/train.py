@@ -19,7 +19,7 @@ from src.loader import load_images, DataSampler
 from src.utils import initialize_exp, bool_flag, attr_flag, check_attr
 from src.model import AutoEncoder
 from src.training import Trainer
-from src.evaluation2 import Evaluator2
+from src.evaluation import Evaluator
 
 # parse parameters
 parser = argparse.ArgumentParser(description='Images autoencoder')
@@ -59,8 +59,6 @@ parser.add_argument("--lambda_flipped", type=float, default=1.0,
                     help="flipped prediction loss coefficient")
 parser.add_argument("--lambda_latent_match", type=float, default=10,
                     help="latent code match loss coefficient")
-parser.add_argument("--lambda_lat_dis", type=float, default=0.0001,
-                    help="Latent discriminator loss feedback coefficient")
 parser.add_argument("--lambda_xcov", type=float, default=0.1, help="xcov loss coefficient")
 parser.add_argument("--lambda_jacobian", type=float, default=1.0, help="jacobian loss coefficient")
 parser.add_argument("--lambda_y", type=float, default=100.0, help="same prediction cost coefficient")
@@ -97,41 +95,42 @@ check_attr(params)
 assert len(params.name.strip()) > 0
 assert params.n_skip <= params.n_layers - 1
 assert params.deconv_method in ['convtranspose', 'upsampling', 'pixelshuffle']
-assert not params.ae_reload or os.path.isfile(params.ae_reload)
+assert not params.ae_reload or os.path.isfile(params.ae_reload), params.ae_reload
 
 # add number of attributes to size of autoencoder
 params.max_fm = params.max_fm + params.n_attr
-params.max_fm_orig  = params.max_fm
+params.max_fm_orig = params.max_fm
+
 
 if not params.ae_teacher_reload:
-    params.ae_teacher_reload = params.ae_reload
+    params.ae_teacher_reload = params.ae_reload # typically teacher weights are used for initializating the student (when possible), so these two are the same
 
-    
 
 # initialize experiment / load dataset
 DATAROOT = '/data/tmp'
 logger = initialize_exp(params)
 data, attributes = load_images(params)
 
-
 train_data = DataSampler(data[0], attributes[0], params)
 valid_data = DataSampler(data[1], attributes[1], params)
 
-# build the Student model
+# build the trainable model 
 ae = AutoEncoder(params).cuda()
 
-
-# build the Teacher model
-params2 = params  
-params2.max_fm = 512 + params.n_attr
-ae_teacher = AutoEncoder(params2).cuda()
-
-params.max_fm  = params.max_fm_orig
+# build the Teacher model (if required)
+if params.lambda_jacobian > 0:
+    params2 = params  
+    params2.max_fm = 512 + params.n_attr
+    ae_teacher = AutoEncoder(params2).cuda()
+    params.max_fm  = params.max_fm_orig
+else:
+    ae_teacher = None
+    
 
 # trainer / evaluator
 trainer = Trainer(ae, ae_teacher, train_data, params)
 
-evaluator = Evaluator2(ae, ae_teacher, valid_data, params)
+evaluator = Evaluator(ae, ae_teacher, valid_data, params)
 
 
 

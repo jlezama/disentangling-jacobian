@@ -333,7 +333,7 @@ class Trainer(object):
         self.ae_optimizer_enc.zero_grad()
         self.ae_optimizer_dec.zero_grad()
 
-        loss.backward() #retain_graph=True)
+        loss.backward(retain_graph=True)
 
         # print 'loss second backward', loss
         if params.clip_grad_norm:
@@ -345,7 +345,6 @@ class Trainer(object):
 
         # add flipped labels prediction cost from reconstruction
         if params.lambda_flipped > 0 or params.lambda_latent_match > 0:
-            print 'flipped...'
             self.ae_optimizer_enc.zero_grad()
             self.ae_optimizer_dec.zero_grad()
 
@@ -361,9 +360,8 @@ class Trainer(object):
             ########
             # Optimize steps 2 and 3
             # only affects decoder
-            
-            
-            loss.backward()# retain_graph=True)
+                        
+            loss.backward()
             # print 'loss second backward', loss
             if params.clip_grad_norm:
                 clip_grad_norm(self.ae.parameters(), params.clip_grad_norm)
@@ -414,12 +412,6 @@ class Trainer(object):
             logger.info('Saving %s to %s ...' % (filename, path))
             torch.save(model, path)
         save(self.ae, 'ae')
-        if self.params.n_lat_dis:
-            save(self.lat_dis, 'lat_dis')
-        if self.params.n_ptc_dis:
-            save(self.ptc_dis, 'ptc_dis')
-        if self.params.n_clf_dis:
-            save(self.clf_dis, 'clf_dis')
 
     def save_best_periodic(self, to_log):
         """

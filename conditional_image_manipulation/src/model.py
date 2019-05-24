@@ -120,9 +120,6 @@ class AutoEncoder(nn.Module):
         self.dropout = params.dec_dropout
         self.attr = params.attr
         self.n_attr = params.n_attr
-        self.ypred_type = params.ypred_type
-        # print  self.n_attr, 'inside AE'
-        # raise
 
 
         enc_layers, dec_layers = build_layers(self.img_sz, self.img_fm, self.init_fm,
@@ -192,7 +189,6 @@ class AutoEncoder(nn.Module):
         
         # in this case, y will be predicted by the encoder
         z_all = enc_outputs[-1]
-        # print z_all.size(), self.n_attr
         n_pred = self.n_attr
         y_pred = z_all[:,-n_pred:,:,:]
 
@@ -200,62 +196,10 @@ class AutoEncoder(nn.Module):
 
         enc_outputs[-1] = z_latent.contiguous()
 
-        if self.ypred_type=='mean':
-            y_pred = torch.mean(y_pred.contiguous().view(bs, self.n_attr, -1), dim=2)
-        elif self.ypred_type == 'max':
-            #print 'using max for y_pred!'
-            y_pred, _ = torch.max(y_pred.contiguous().view(bs, self.n_attr, -1), dim=2)
-
-        else:
-            raise ValueError('Unknown ypred type')
+        y_pred = torch.mean(y_pred.contiguous().view(bs, self.n_attr, -1), dim=2)
             
-            # print 'y_pred size', y_pred.size(), 'y size', y.size()
-
-        #raise ValueError('termina')
-
         dec_outputs = self.decode(enc_outputs, y_pred)
         return enc_outputs, dec_outputs, y_pred
-
-
-class LatentDiscriminator(nn.Module):
-
-    def __init__(self, params):
-        super(LatentDiscriminator, self).__init__()
-
-        self.img_sz = params.img_sz
-        self.img_fm = params.img_fm
-        self.init_fm = params.init_fm
-        self.max_fm = params.max_fm
-        self.n_layers = params.n_layers
-        self.n_skip = params.n_skip
-        self.hid_dim = params.hid_dim
-        self.dropout = params.lat_dis_dropout
-        self.attr = params.attr
-        self.n_attr = params.n_attr
-
-        self.n_dis_layers = int(np.log2(self.img_sz))
-        self.conv_in_sz = self.img_sz / (2 ** (self.n_layers - self.n_skip))
-        self.conv_in_fm = min(self.init_fm * (2 ** (self.n_layers - self.n_skip - 1)), self.max_fm)
-        self.conv_out_fm = min(self.init_fm * (2 ** (self.n_dis_layers - 1)), self.max_fm)
-
-        # discriminator layers are identical to encoder, but convolve until size 1
-        enc_layers, _ = build_layers(self.img_sz, self.img_fm, self.init_fm, self.max_fm,
-                                     self.n_dis_layers, self.n_attr, 0, 'convtranspose',
-                                     False, self.dropout, 0)
-
-        self.conv_layers = nn.Sequential(*(enc_layers[self.n_layers - self.n_skip:]))
-        self.proj_layers = nn.Sequential(
-            nn.Linear(self.conv_out_fm, self.hid_dim),
-            nn.LeakyReLU(0.2, inplace=True),
-            nn.Linear(self.hid_dim, self.n_attr)
-        )
-
-    def forward(self, x):
-
-        conv_output = self.conv_layers(x)
-        assert conv_output.size() == (x.size(0), self.conv_out_fm, 1, 1)
-        return self.proj_layers(conv_output.view(x.size(0), self.conv_out_fm))
-
 
 
 

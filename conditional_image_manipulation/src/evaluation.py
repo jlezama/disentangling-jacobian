@@ -48,7 +48,7 @@ mean first."""
 
 
 
-class Evaluator2(object):
+class Evaluator(object):
 
     def __init__(self, ae,  ae_teacher, data, params):
         """
@@ -267,15 +267,7 @@ class Evaluator2(object):
             
             y_pred_3 = z_all_3[:,-params.n_attr:,:,:]
 
-            if params.ypred_type=='mean':
-                y_pred_3 = torch.mean(y_pred_3.contiguous().view(bs, params.n_attr, -1), dim=2)
-            elif params.ypred_type == 'max':
-                #print 'using max for y_pred3!'
-                y_pred_3, _ = torch.max(y_pred_3.contiguous().view(bs, params.n_attr, -1), dim=2)
-            else:
-                raise ValueError('Unknown ypred3 type')
-
-
+            y_pred_3 = torch.mean(y_pred_3.contiguous().view(bs, params.n_attr, -1), dim=2)
             
             
             flipped_labels = torch.sign(flipped)
@@ -370,12 +362,6 @@ class Evaluator2(object):
             logger.info('Saving %s to %s ...' % (filename, path))
             torch.save(model, path)
         save(self.ae, 'ae')
-        if self.params.n_lat_dis:
-            save(self.lat_dis, 'lat_dis')
-        if self.params.n_ptc_dis:
-            save(self.ptc_dis, 'ptc_dis')
-        if self.params.n_clf_dis:
-            save(self.clf_dis, 'clf_dis')
 
     def save_best_periodic(self, to_log):
         """
