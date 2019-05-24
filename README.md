@@ -13,7 +13,7 @@ If you find this work useful in your research, please consider citing this paper
 # Experiments
 [Unsupervised learning of disentangled representations](unsupervised_disentangling) 
 
-[Conditional image generation](conditional_image_generation) 
+[Conditional image manipulation](conditional_image_manipulation) 
 
 # Video
-[Conditional image generation example](https://iie.fing.edu.uy/~jlezama/web/iclr2019.mp4)
+[Conditional image manipulation example](https://iie.fing.edu.uy/~jlezama/web/iclr2019.mp4)
