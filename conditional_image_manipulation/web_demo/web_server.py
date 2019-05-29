@@ -26,7 +26,7 @@ import matplotlib.image
 
 
 import sys
-sys.path.append('../..')
+sys.path.append('../')
 from src.logger import create_logger
 from src.loader import load_images, DataSampler
 from src.utils import bool_flag
@@ -171,7 +171,7 @@ except AttributeError:
         tensor._backward_hooks = backward_hooks
         return tensor
     torch._utils._rebuild_tensor_v2 = _rebuild_tensor_v2
-                # create logger / load trained model
+ 
 logger = create_logger(None)
 ae = torch.load(params.model_path).eval()
 
