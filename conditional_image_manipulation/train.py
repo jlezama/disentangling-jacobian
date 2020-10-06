@@ -133,7 +133,6 @@ trainer = Trainer(ae, ae_teacher, train_data, params)
 evaluator = Evaluator(ae, ae_teacher, valid_data, params)
 
 
-
 for n_epoch in range(params.n_epochs):
 
     logger.info('Starting epoch %i...' % n_epoch)
@@ -150,9 +149,7 @@ for n_epoch in range(params.n_epochs):
 
         # print training statistics
         trainer.step(n_iter)
-
-    
-    
+        
     
     if (n_epoch % 10) == 0:
         resultsdir = '%s/%s' % (DATAROOT, params.outdir)
